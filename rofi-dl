@@ -8,38 +8,41 @@ source ./config
 
 download_playlist=$SCRIPT_DIR/.download_playlist.txt
 
-choises="add\nclear links\nshow playlist\ndownload playlist"
+while :; do
+	choises="add\nclear links\nshow playlist\ndownload playlist"
+	select_choise=$(printf "$choises" | rofi -dmenu -i -matching fuzzy -lines 10 -width 50 -mesg 'select one choise:')
 
-select_choise=$(printf "$choises" | rofi -dmenu -i -matching fuzzy -lines 10 -width 50 -mesg 'select one choise:')
+	# exit if user press esc or click on the exit button
+	[[ -z $select_choise ]] && exit 1
 
-case "$select_choise" in
+	case "$select_choise" in
+	"add")
+		download_link=$(rofi -dmenu -i -width 50 -mesg 'write your link:')
+		if [[ $download_link ]]; then
+			echo "$download_link" >>"$download_playlist"
+			echo "link was add into $download_playlist file"
+		else
+			exit 2
+		fi
+		;;
 
-"add")
-	download_link=$(rofi -dmenu -i -width 50 -mesg 'write your link:')
-	if [[ $download_link ]]; then
-		echo "$download_link" >>"$download_playlist"
-		echo "link was add into $download_playlist file"
-	else
-		exit 2
-	fi
-	;;
-
-"download playlist")
-	cd "$donwload_dir" || exit 1
-	alacritty -e aria2c -c -j1 -x5 \
-		-U 'Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0' \
+	"download playlist")
+		cd "$donwload_dir" || exit 1
 		$terminal_cmd aria2c -c -j1 -x5 \
+			-U 'Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0' \
+			-i "$download_playlist" &&
+			echo "" >"$download_playlist"
+		;;
+
+	"clear links")
 		echo "" >"$download_playlist"
-	;;
+		;;
 
-"clear links")
+	"show playlist")
 		$terminal_cmd lvim "$download_playlist"
-	;;
-
-"show playlist")
-	alacritty -e lvim "$download_playlist"
-	;;
-*)
-	echo default
-	;;
-esac
+		;;
+	*)
+		echo default
+		;;
+	esac
+done
