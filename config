@@ -1,0 +1,2 @@
+terminal_cmd="alacritty -e"
+donwload_dir="$HOME"/Downloads/aria_dl

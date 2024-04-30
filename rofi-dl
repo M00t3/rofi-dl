@@ -4,7 +4,7 @@ SCRIPT_PATH=$(readlink -f "$0")
 SCRIPT_DIR=$(dirname "$SCRIPT_PATH")
 cd "$SCRIPT_DIR" || exit 2
 
-donwload_dir="$HOME"/Downloads/aria_dl
+source ./config
 
 download_playlist=$SCRIPT_DIR/.download_playlist.txt
 
@@ -28,12 +28,12 @@ case "$select_choise" in
 	cd "$donwload_dir" || exit 1
 	alacritty -e aria2c -c -j1 -x5 \
 		-U 'Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0' \
-		-i "$download_playlist" &&
+		$terminal_cmd aria2c -c -j1 -x5 \
 		echo "" >"$download_playlist"
 	;;
 
 "clear links")
-	echo "" >"$download_playlist"
+		$terminal_cmd lvim "$download_playlist"
 	;;
 
 "show playlist")
