@@ -21,7 +21,7 @@ add, view, clear, and download links.
 1. Clone the repository:
 
 ```sh
-git clone https://github.com/mooteee/rofi-dl.git
+git clone https://github.com/M00t3/rofi-dl.git
 cd rofi-dl
 ```
 
